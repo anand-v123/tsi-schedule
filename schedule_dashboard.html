@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSI Schedule</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+    }
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #fff;
+      padding: 16px 20px 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    .header h1 { font-size: 18px; font-weight: 700; letter-spacing: .3px; }
+    .header p  { font-size: 12px; opacity: .85; margin-top: 2px; }
+
+    /* ── Date nav bar ── */
+    .date-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 62px;
+      z-index: 99;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+    .nav-btn {
+      flex-shrink: 0;
+      width: 38px; height: 38px;
+      border: none;
+      background: #2563eb;
+      color: #fff;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .nav-btn:disabled { background: #d1d5db; cursor: default; }
+    .nav-btn:not(:disabled):hover { background: #1e40af; }
+    .date-info { flex: 1; text-align: center; }
+    .date-info .day-name { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #6b7280; letter-spacing: .5px; }
+    .date-info .date-num { font-size: 22px; font-weight: 800; color: #111827; line-height: 1; }
+    .date-info .month    { font-size: 13px; color: #374151; margin-top: 1px; }
+    .date-picker {
+      padding: 6px 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #374151;
+      cursor: pointer;
+    }
+
+    /* ── Cards grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding: 14px 14px 24px;
+    }
+    @media (min-width: 640px) {
+      .grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* ── Location card ── */
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,.1);
+    }
+    .card-header {
+      padding: 12px 16px 10px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .card-header.plano    { background: #0f4c81; }
+    .card-header.ftworth  { background: #7c3aed; }
+    .card-header.arlington { background: #047857; }
+    .card-header .sub {
+      font-size: 11px;
+      font-weight: 500;
+      opacity: .8;
+      margin-top: 1px;
+    }
+
+    /* ── Shift badge ── */
+    .shift-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-top: 4px;
+    }
+    .badge-oncall { background: #fef3c7; color: #92400e; }
+    .badge-24h    { background: #e0e7ff; color: #3730a3; }
+    .badge-day    { background: #dcfce7; color: #166534; }
+    .badge-night  { background: #1e293b; color: #e2e8f0; }
+
+    /* ── Role rows ── */
+    .roles { padding: 12px 16px 14px; }
+    .role-row {
+      display: flex;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .role-row:last-child { border-bottom: none; }
+    .role-label {
+      flex-shrink: 0;
+      width: 90px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: #9ca3af;
+      padding-top: 2px;
+    }
+    .role-value {
+      flex: 1;
+      font-size: 14px;
+      color: #111827;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .role-value.empty { color: #d1d5db; font-style: italic; font-weight: 400; }
+    .pill {
+      display: inline-block;
+      background: #f3f4f6;
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin: 1px 2px 1px 0;
+      font-size: 13px;
+    }
+
+    /* ── Shift section dividers ── */
+    .section-divider {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: #6b7280;
+      background: #f9fafb;
+      padding: 5px 16px;
+      border-top: 1px solid #e5e7eb;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    /* ── Days Off button ── */
+    .days-btn {
+      flex-shrink: 0;
+      padding: 0 14px;
+      height: 38px;
+      border: none;
+      background: #0d9488;
+      color: #fff;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 5px;
+      transition: background .2s;
+      white-space: nowrap;
+    }
+    .days-btn:hover { background: #0f766e; }
+
+    /* ── Modal overlay ── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 200;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    /* ── Bottom sheet ── */
+    .modal-sheet {
+      background: #fff;
+      width: 100%;
+      max-width: 680px;
+      border-radius: 18px 18px 0 0;
+      max-height: 82vh;
+      overflow-y: auto;
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+    .modal-handle {
+      width: 36px; height: 4px;
+      background: #d1d5db;
+      border-radius: 99px;
+      margin: 12px auto 0;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px 10px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .modal-title { font-size: 16px; font-weight: 700; color: #111827; }
+    .modal-close {
+      width: 30px; height: 30px;
+      border: none; background: #f3f4f6;
+      border-radius: 50%; font-size: 16px;
+      color: #6b7280; cursor: pointer; line-height: 1;
+    }
+    .modal-close:hover { background: #e5e7eb; }
+
+    /* ── Person selector grid ── */
+    .person-section { padding: 14px 18px 4px; }
+    .person-section-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .5px; color: #9ca3af; margin-bottom: 8px;
+    }
+    .person-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .person-pill {
+      padding: 6px 14px;
+      border: 2px solid #e5e7eb;
+      background: #f9fafb;
+      border-radius: 99px;
+      font-size: 13px; font-weight: 500;
+      color: #374151; cursor: pointer;
+      transition: all .15s;
+    }
+    .person-pill:hover { border-color: #0d9488; color: #0d9488; background: #f0fdfa; }
+    .person-pill.active { border-color: #0d9488; background: #0d9488; color: #fff; }
+
+    /* ── Results ── */
+    .results-section { padding: 10px 18px 20px; }
+    .results-heading {
+      font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+      color: #6b7280; margin-bottom: 10px;
+    }
+    .result-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      margin-bottom: 6px;
+      background: #f0fdf4;
+    }
+    .result-icon { font-size: 18px; flex-shrink: 0; }
+    .result-date-label { font-size: 14px; font-weight: 600; color: #111827; }
+    .result-day-label { font-size: 11px; color: #6b7280; margin-top: 1px; }
+    .results-empty {
+      text-align: center; padding: 28px 16px;
+      color: #9ca3af; font-size: 14px;
+    }
+    .no-selection {
+      text-align: center; padding: 28px 16px;
+      color: #9ca3af; font-size: 14px; font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>TSI Call Schedule</h1>
+  <p>Texas Stroke Institute — March 2026</p>
+</div>
+
+<div class="date-bar">
+  <button class="nav-btn" id="prevBtn" onclick="changeDate(-1)">‹</button>
+  <div class="date-info">
+    <div class="day-name" id="dayName"></div>
+    <div class="date-num" id="dateNum"></div>
+    <div class="month"   id="monthStr"></div>
+  </div>
+  <input type="date" class="date-picker" id="datePicker" min="2026-03-01" max="2026-03-31" onchange="onPickerChange(this.value)">
+  <button class="days-btn" onclick="openDaysOff()">📅 Days Off</button>
+  <button class="nav-btn" id="nextBtn" onclick="changeDate(1)">›</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<!-- Days Off modal -->
+<div class="modal-overlay" id="daysModal" onclick="closeDaysOff(event)">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">📅 Weekend Days Off</span>
+      <button class="modal-close" onclick="closeDaysOff()">✕</button>
+    </div>
+    <div class="person-section">
+      <div class="person-section-label">Select a person</div>
+      <div class="person-grid" id="personGrid"></div>
+    </div>
+    <div class="results-section" id="daysResults">
+      <div class="no-selection">Tap a name above to see their free weekends</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCHEDULE = {"Plano":{"2026-03-01":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-02":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-03":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-04":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-05":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-06":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-07":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":[]},"2026-03-08":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":[]},"2026-03-09":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-10":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-11":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-12":{"shift_type":"24h","on_call":["De la Garza","Roberts"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-13":{"shift_type":"24h","on_call":["Roberts","De la Garza"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-14":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-15":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-16":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-17":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-18":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-19":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-20":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-21":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-22":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-23":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-24":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-25":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-26":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-27":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-28":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-29":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-30":{"shift_type":"24h","on_call":["De la Garza","Beltagy"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-31":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]}},"FortWorth":{"2026-03-01":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-02":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-03":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-04":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-05":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-06":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-07":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-08":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-09":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-10":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen","Kim"]},"2026-03-11":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen","Kim"]},"2026-03-12":{"shift_type":"24h","on_call":["De la Garza","Roberts"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen","Kim"]},"2026-03-13":{"shift_type":"24h","on_call":["Roberts","De la Garza"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen","Kim"]},"2026-03-14":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-15":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-16":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-17":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-18":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-19":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-20":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-21":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Venizelos","hemorrhagic":"","ischemic":"","night":[]},"2026-03-22":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Venizelos","hemorrhagic":"","ischemic":"","night":[]},"2026-03-23":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-24":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-25":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-26":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-27":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-28":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-29":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-30":{"shift_type":"24h","on_call":["De la Garza","Beltagy"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-31":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]}},"Arlington":{"2026-03-01":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-02":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-03":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-04":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-05":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-06":{"shift_type":"oncall","on_call":["Beltagy","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-07":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-08":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-09":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-10":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-11":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-12":{"shift_type":"24h","on_call":["De la Garza","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-13":{"shift_type":"24h","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-14":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-15":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-16":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-17":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-18":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-19":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-20":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-21":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Venizelos","hemorrhagic":"","ischemic":"","night":[]},"2026-03-22":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Venizelos","hemorrhagic":"","ischemic":"","night":[]},"2026-03-23":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-24":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-25":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-26":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-27":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-28":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-29":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-30":{"shift_type":"24h","on_call":["De la Garza","Beltagy"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-31":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]}}};
+
+const LOCATIONS = [
+  { key: 'Plano',     label: 'Medical City Plano',      cls: 'plano'     },
+  { key: 'FortWorth', label: 'Medical City Fort Worth', cls: 'ftworth'   },
+  { key: 'Arlington', label: 'Medical City Arlington',  cls: 'arlington' },
+];
+
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// All available dates sorted
+const ALL_DATES = Object.keys(SCHEDULE.Plano).sort();
+let currentIdx = (() => {
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0,10);
+  const i = ALL_DATES.indexOf(todayStr);
+  return i >= 0 ? i : 0;
+})();
+
+function dateKey(idx) { return ALL_DATES[idx]; }
+
+function shiftBadge(type) {
+  const map = {
+    'oncall': ['On-Call', 'badge-oncall'],
+    '24h':    ['24h (6A–6A)', 'badge-24h'],
+    'day':    ['Day Shift', 'badge-day'],
+    'night':  ['Night Shift', 'badge-night'],
+  };
+  const [label, cls] = map[type] || ['—','badge-oncall'];
+  return `<span class="shift-badge ${cls}">${label}</span>`;
+}
+
+function pill(name) {
+  return `<span class="pill">${name}</span>`;
+}
+
+function renderCard(loc) {
+  const key = dateKey(currentIdx);
+  const d = SCHEDULE[loc.key][key] || {};
+
+  const oncall    = (d.on_call || []).map(pill).join('') || '<span class="empty">—</span>';
+  const att       = d.attending   || '';
+  const hem       = d.hemorrhagic || '';
+  const isc       = d.ischemic    || '';
+  const nightArr  = Array.isArray(d.night) ? d.night : (d.night ? [d.night] : []);
+  const hasNight  = nightArr.length > 0;
+  const nightHtml = hasNight ? nightArr.map(pill).join('') : '';
+
+  // Build role rows
+  let rows = '';
+
+  // On-call always shown
+  rows += `<div class="role-row">
+    <div class="role-label">On-Call</div>
+    <div class="role-value">${oncall}</div>
+  </div>`;
+
+  // Plano: day shifts broken into Hemorrhagic / Ischemic / Night
+  if (hem || isc) {
+    rows += `<div class="section-divider">Day Shift — 7A to 6P</div>`;
+    if (hem) rows += `<div class="role-row">
+      <div class="role-label">Hemorrhagic</div>
+      <div class="role-value">${hem}</div>
+    </div>`;
+    if (isc) rows += `<div class="role-row">
+      <div class="role-label">Ischemic</div>
+      <div class="role-value">${isc}</div>
+    </div>`;
+    if (hasNight) {
+      rows += `<div class="section-divider">Night Shift — 6P to 7A</div>`;
+      rows += `<div class="role-row">
+        <div class="role-label">Night Attending</div>
+        <div class="role-value">${nightHtml}</div>
+      </div>`;
+    }
+  } else {
+    // FortWorth / Arlington: attending = day, night = night
+    if (att) rows += `<div class="role-row">
+      <div class="role-label">${hasNight ? 'Day Attending' : 'Attending'}</div>
+      <div class="role-value">${att}</div>
+    </div>`;
+    if (hasNight) {
+      rows += `<div class="section-divider">Night Shift — 6P to 7A</div>`;
+      rows += `<div class="role-row">
+        <div class="role-label">Night Attending</div>
+        <div class="role-value">${nightHtml}</div>
+      </div>`;
+    }
+  }
+
+  return `
+  <div class="card">
+    <div class="card-header ${loc.cls}">
+      ${loc.label}
+      <div class="sub">${shiftBadge(d.shift_type || 'oncall')}</div>
+    </div>
+    <div class="roles">${rows}</div>
+  </div>`;
+}
+
+function render() {
+  const key = dateKey(currentIdx);
+  const date = new Date(key + 'T00:00:00');
+  document.getElementById('dayName').textContent  = DAYS[date.getDay()];
+  document.getElementById('dateNum').textContent  = date.getDate();
+  document.getElementById('monthStr').textContent = `${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
+  document.getElementById('datePicker').value     = key;
+  document.getElementById('prevBtn').disabled     = currentIdx === 0;
+  document.getElementById('nextBtn').disabled     = currentIdx === ALL_DATES.length - 1;
+  document.getElementById('grid').innerHTML       = LOCATIONS.map(renderCard).join('');
+}
+
+function changeDate(delta) {
+  currentIdx = Math.max(0, Math.min(ALL_DATES.length - 1, currentIdx + delta));
+  render();
+}
+
+function onPickerChange(val) {
+  const i = ALL_DATES.indexOf(val);
+  if (i >= 0) { currentIdx = i; render(); }
+}
+
+// ── Days Off feature ──────────────────────────────────────────────────────
+
+// Collect every unique name that appears in ANY role across the schedule
+function getAllNames() {
+  const names = new Set();
+  for (const loc of Object.keys(SCHEDULE)) {
+    for (const d of Object.values(SCHEDULE[loc])) {
+      (d.on_call  || []).forEach(n => { if (n) names.add(n); });
+      (d.night    || []).forEach(n => { if (n) names.add(n); });
+      if (d.attending)   names.add(d.attending);
+      if (d.hemorrhagic) names.add(d.hemorrhagic);
+      if (d.ischemic)    names.add(d.ischemic);
+    }
+  }
+  return [...names].sort();
+}
+
+// Return true if a person appears in ANY role at ANY center on a given date
+function isScheduled(name, dateStr) {
+  for (const loc of Object.keys(SCHEDULE)) {
+    const d = SCHEDULE[loc][dateStr] || {};
+    if ((d.on_call  || []).includes(name)) return true;
+    if ((d.night    || []).includes(name)) return true;
+    if (d.attending   === name) return true;
+    if (d.hemorrhagic === name) return true;
+    if (d.ischemic    === name) return true;
+  }
+  return false;
+}
+
+// Weekend dates (Sat=6, Sun=0) in the schedule
+const WEEKEND_DATES = ALL_DATES.filter(d => {
+  const day = new Date(d + 'T00:00:00').getDay();
+  return day === 0 || day === 6;
+});
+
+let selectedPerson = null;
+
+function openDaysOff() {
+  // Build person pills
+  const grid = document.getElementById('personGrid');
+  grid.innerHTML = getAllNames().map(name =>
+    `<button class="person-pill${name === selectedPerson ? ' active' : ''}"
+       onclick="selectPerson('${name}')">${name}</button>`
+  ).join('');
+  document.getElementById('daysModal').classList.add('open');
+  if (selectedPerson) renderDaysResults(selectedPerson);
+}
+
+function closeDaysOff(e) {
+  if (!e || e.target === document.getElementById('daysModal')) {
+    document.getElementById('daysModal').classList.remove('open');
+  }
+}
+
+function selectPerson(name) {
+  selectedPerson = name;
+  // Update pill highlight
+  document.querySelectorAll('.person-pill').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === name);
+  });
+  renderDaysResults(name);
+}
+
+function renderDaysResults(name) {
+  const freeDates = WEEKEND_DATES.filter(d => !isScheduled(name, d));
+  const container = document.getElementById('daysResults');
+
+  if (freeDates.length === 0) {
+    container.innerHTML = `<div class="results-empty">No free weekends found for <strong>${name}</strong> in March.</div>`;
+    return;
+  }
+
+  const rows = freeDates.map(d => {
+    const date   = new Date(d + 'T00:00:00');
+    const dayStr = DAYS[date.getDay()];
+    const dateNum = date.getDate();
+    const monthStr = MONTHS[date.getMonth()];
+    return `
+      <div class="result-row">
+        <div class="result-icon">🟢</div>
+        <div>
+          <div class="result-date-label">${dayStr}, ${monthStr} ${dateNum}</div>
+          <div class="result-day-label">Not scheduled at any center</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="results-heading">${name} — ${freeDates.length} free weekend day${freeDates.length !== 1 ? 's' : ''}</div>
+    ${rows}`;
+}
+
+render();
+</script>
+</body>
+</html>
