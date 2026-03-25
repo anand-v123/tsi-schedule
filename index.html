@@ -803,8 +803,9 @@ function getOvernightDates(name) {
 function openCallDates() {
   callRange = currentMonthRange();
   setRangeInputs('callFrom','callTo', callRange);
+  selectedCallPerson = null;
   const makePills = arr => arr.map(name =>
-    `<button class="person-pill${name===selectedCallPerson?' active-indigo':''}" data-name="${name}" onclick="selectCallPerson(this.dataset.name)">${name}</button>`
+    `<button class="person-pill" data-name="${name}" onclick="selectCallPerson(this.dataset.name)">${name}</button>`
   ).join('');
   document.getElementById('callPersonGrid').innerHTML = `
     <div style="width:100%">
@@ -813,8 +814,8 @@ function openCallDates() {
       <div class="person-section-label" style="margin-bottom:6px">Fellows</div>
       <div class="person-grid">${makePills(FELLOWS)}</div>
     </div>`;
+  document.getElementById('callResults').innerHTML = `<div class="no-selection">Tap a name above to see their overnight call dates</div>`;
   document.getElementById('callModal').classList.add('open');
-  if (selectedCallPerson) renderCallResults(selectedCallPerson);
 }
 function closeCallDates(e) {
   if (!e || e.target===document.getElementById('callModal'))
