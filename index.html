@@ -271,6 +271,46 @@
     }
     .modal-close:hover { background: #e5e7eb; }
 
+    /* ── Date range bar ── */
+    .range-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e5e7eb;
+      flex-wrap: wrap;
+    }
+    .range-bar label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .range-bar input[type="date"] {
+      padding: 4px 7px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #374151;
+      background: #fff;
+    }
+    .range-reset-btn {
+      margin-left: auto;
+      padding: 4px 11px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #2563eb;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .range-reset-btn:hover { background: #dbeafe; }
+
     /* ── Person selector ── */
     .person-section { padding: 14px 18px 4px; }
     .person-section-label {
@@ -436,6 +476,11 @@
       <span class="modal-title">📅 Weekend Days Off</span>
       <button class="modal-close" onclick="closeDaysOff()">✕</button>
     </div>
+    <div class="range-bar">
+      <label>From <input type="date" id="daysFrom" onchange="onDaysRangeChange()"></label>
+      <label>To <input type="date" id="daysTo" onchange="onDaysRangeChange()"></label>
+      <button class="range-reset-btn" onclick="resetDaysRange()">This month</button>
+    </div>
     <div class="person-section">
       <div class="person-section-label">Select a person</div>
       <div class="person-grid" id="daysPersonGrid"></div>
@@ -455,6 +500,11 @@
     <div class="modal-header">
       <span class="modal-title">🌙 Overnight Call Dates</span>
       <button class="modal-close" onclick="closeCallDates()">✕</button>
+    </div>
+    <div class="range-bar">
+      <label>From <input type="date" id="callFrom" onchange="onCallRangeChange()"></label>
+      <label>To <input type="date" id="callTo" onchange="onCallRangeChange()"></label>
+      <button class="range-reset-btn" onclick="resetCallRange()">This month</button>
     </div>
     <div class="person-section">
       <div class="person-section-label">Select a person</div>
@@ -481,7 +531,11 @@
         <button class="toggle-btn active" id="toggleAtt" onclick="setAnalyticsMode('attending')">Attendings</button>
         <button class="toggle-btn"        id="toggleFel" onclick="setAnalyticsMode('fellow')">Fellows</button>
       </div>
-      <div class="month-filters" id="monthFilters"></div>
+      <div class="range-bar" style="margin: 0 -18px; padding: 8px 18px;">
+        <label>From <input type="date" id="analytFrom" onchange="onAnalytRangeChange()"></label>
+        <label>To <input type="date" id="analytTo" onchange="onAnalytRangeChange()"></label>
+        <button class="range-reset-btn" onclick="resetAnalytRange()">This month</button>
+      </div>
     </div>
     <div class="analytics-legend" id="analyticsLegend"></div>
     <div class="charts-area" id="chartsArea"></div>
@@ -617,6 +671,66 @@ function getAllNames() {
   return [...names].sort();
 }
 
+// ── Date range helpers ─────────────────────────────────────────────────────
+let daysRange   = { start: null, end: null };
+let callRange   = { start: null, end: null };
+let analytRange = { start: null, end: null };
+
+function currentMonthRange() {
+  const key = ALL_DATES[currentIdx].slice(0, 7);
+  const inMonth = ALL_DATES.filter(d => d.startsWith(key));
+  return { start: inMonth[0], end: inMonth[inMonth.length - 1] };
+}
+
+function getRangeDates(range) {
+  return ALL_DATES.filter(d => d >= range.start && d <= range.end);
+}
+
+function setRangeInputs(fromId, toId, range) {
+  const f = document.getElementById(fromId);
+  const t = document.getElementById(toId);
+  f.min = t.min = ALL_DATES[0];
+  f.max = t.max = ALL_DATES[ALL_DATES.length - 1];
+  f.value = range.start;
+  t.value = range.end;
+}
+
+// Days Off range
+function resetDaysRange() {
+  daysRange = currentMonthRange();
+  setRangeInputs('daysFrom','daysTo', daysRange);
+  if (selectedDaysPerson) renderDaysResults(selectedDaysPerson);
+}
+function onDaysRangeChange() {
+  const f = document.getElementById('daysFrom').value;
+  const t = document.getElementById('daysTo').value;
+  if (f && t && f <= t) { daysRange = { start:f, end:t }; if (selectedDaysPerson) renderDaysResults(selectedDaysPerson); }
+}
+
+// Call Dates range
+function resetCallRange() {
+  callRange = currentMonthRange();
+  setRangeInputs('callFrom','callTo', callRange);
+  if (selectedCallPerson) renderCallResults(selectedCallPerson);
+}
+function onCallRangeChange() {
+  const f = document.getElementById('callFrom').value;
+  const t = document.getElementById('callTo').value;
+  if (f && t && f <= t) { callRange = { start:f, end:t }; if (selectedCallPerson) renderCallResults(selectedCallPerson); }
+}
+
+// Analytics range
+function resetAnalytRange() {
+  analytRange = currentMonthRange();
+  setRangeInputs('analytFrom','analytTo', analytRange);
+  renderAnalytics();
+}
+function onAnalytRangeChange() {
+  const f = document.getElementById('analytFrom').value;
+  const t = document.getElementById('analytTo').value;
+  if (f && t && f <= t) { analytRange = { start:f, end:t }; renderAnalytics(); }
+}
+
 // ── DAYS OFF ───────────────────────────────────────────────────────────────
 const WEEKEND_DATES = ALL_DATES.filter(d => { const day = new Date(d+'T00:00:00').getDay(); return day===0||day===6; });
 
@@ -635,6 +749,8 @@ function isScheduled(name, dateStr) {
 let selectedDaysPerson = null;
 
 function openDaysOff() {
+  daysRange = currentMonthRange();
+  setRangeInputs('daysFrom','daysTo', daysRange);
   document.getElementById('daysPersonGrid').innerHTML = getAllNames().map(name =>
     `<button class="person-pill${name===selectedDaysPerson?' active-teal':''}" data-name="${name}" onclick="selectDaysPerson(this.dataset.name)">${name}</button>`
   ).join('');
@@ -651,7 +767,8 @@ function selectDaysPerson(name) {
   renderDaysResults(name);
 }
 function renderDaysResults(name) {
-  const free = WEEKEND_DATES.filter(d => !isScheduled(name,d));
+  const rangeWeekends = getRangeDates(daysRange).filter(d => { const day = new Date(d+'T00:00:00').getDay(); return day===0||day===6; });
+  const free = rangeWeekends.filter(d => !isScheduled(name,d));
   const el = document.getElementById('daysResults');
   if (!free.length) { el.innerHTML=`<div class="results-empty">No free weekends found for <strong>${name}</strong>.</div>`; return; }
   el.innerHTML = `<div class="results-heading">${name} — ${free.length} free weekend day${free.length!==1?'s':''}</div>` +
@@ -666,7 +783,7 @@ let selectedCallPerson = null;
 
 function getOvernightDates(name) {
   const overnight = new Set();
-  for (const date of ALL_DATES) {
+  for (const date of getRangeDates(callRange)) {
     for (const loc of Object.keys(SCHEDULE)) {
       const d = SCHEDULE[loc][date]||{};
       // Night attending shift, weekend oncall attending, or fellow on-call duty
@@ -684,6 +801,8 @@ function getOvernightDates(name) {
 }
 
 function openCallDates() {
+  callRange = currentMonthRange();
+  setRangeInputs('callFrom','callTo', callRange);
   const makePills = arr => arr.map(name =>
     `<button class="person-pill${name===selectedCallPerson?' active-indigo':''}" data-name="${name}" onclick="selectCallPerson(this.dataset.name)">${name}</button>`
   ).join('');
@@ -728,22 +847,8 @@ function renderCallResults(name) {
 // ── ANALYTICS ──────────────────────────────────────────────────────────────
 let analyticsMode = 'attending';
 
-const AVAILABLE_MONTHS = (() => {
-  const seen = new Map();
-  for (const d of ALL_DATES) {
-    const key = d.slice(0,7);
-    if (!seen.has(key)) {
-      const dt = new Date(d+'T00:00:00');
-      seen.set(key, `${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`);
-    }
-  }
-  return [...seen.entries()].map(([k,v]) => ({ key:k, label:v }));
-})();
-
-let selectedMonths = new Set(AVAILABLE_MONTHS.map(m => m.key));
-
 function getAnalyticsDates() {
-  return ALL_DATES.filter(d => selectedMonths.has(d.slice(0,7)));
+  return getRangeDates(analytRange);
 }
 
 function computeStats(dates) {
@@ -871,24 +976,14 @@ function svgBarChart(people, counts, colors) {
 }
 
 function openAnalytics() {
-  document.getElementById('monthFilters').innerHTML = AVAILABLE_MONTHS.map(m =>
-    `<button class="month-chip${selectedMonths.has(m.key)?' active':''}" data-key="${m.key}" onclick="toggleMonth(this.dataset.key)">${m.label}</button>`
-  ).join('');
+  analytRange = currentMonthRange();
+  setRangeInputs('analytFrom','analytTo', analytRange);
   document.getElementById('analyticsModal').classList.add('open');
   renderAnalytics();
 }
 function closeAnalytics(e) {
   if (!e || e.target===document.getElementById('analyticsModal'))
     document.getElementById('analyticsModal').classList.remove('open');
-}
-function toggleMonth(key) {
-  if (selectedMonths.has(key)) {
-    if (selectedMonths.size > 1) selectedMonths.delete(key); // always keep at least one
-  } else {
-    selectedMonths.add(key);
-  }
-  document.querySelectorAll('.month-chip').forEach(b => b.classList.toggle('active', selectedMonths.has(b.dataset.key)));
-  renderAnalytics();
 }
 function setAnalyticsMode(mode) {
   analyticsMode = mode;
