@@ -11,14 +11,15 @@
       background: #f0f2f5;
       min-height: 100vh;
     }
+
+    /* ── Sticky wrapper ── */
+    .sticky-top { position: sticky; top: 0; z-index: 100; }
+
     /* ── Header ── */
     .header {
       background: linear-gradient(135deg, #1e3a8a, #2563eb);
       color: #fff;
-      padding: 16px 20px 12px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      padding: 14px 20px 10px;
       box-shadow: 0 2px 8px rgba(0,0,0,.25);
     }
     .header h1 { font-size: 18px; font-weight: 700; letter-spacing: .3px; }
@@ -28,14 +29,11 @@
     .date-bar {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px 16px;
+      gap: 8px;
+      padding: 10px 14px;
       background: #fff;
       border-bottom: 1px solid #e5e7eb;
-      position: sticky;
-      top: 62px;
-      z-index: 99;
-      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
     }
     .nav-btn {
       flex-shrink: 0;
@@ -44,7 +42,7 @@
       background: #2563eb;
       color: #fff;
       border-radius: 8px;
-      font-size: 18px;
+      font-size: 20px;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: background .2s;
@@ -56,13 +54,42 @@
     .date-info .date-num { font-size: 22px; font-weight: 800; color: #111827; line-height: 1; }
     .date-info .month    { font-size: 13px; color: #374151; margin-top: 1px; }
     .date-picker {
-      padding: 6px 8px;
+      flex-shrink: 0;
+      padding: 6px 5px;
       border: 1px solid #d1d5db;
       border-radius: 6px;
-      font-size: 13px;
+      font-size: 12px;
       color: #374151;
       cursor: pointer;
+      max-width: 128px;
     }
+
+    /* ── Action buttons bar ── */
+    .action-bar {
+      display: flex;
+      background: #fff;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .action-btn {
+      flex: 1;
+      padding: 9px 4px;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+      transition: all .15s;
+    }
+    .action-btn:hover { background: #f9fafb; color: #374151; }
+    .action-btn.teal:hover   { color: #0d9488; border-bottom-color: #0d9488; }
+    .action-btn.indigo:hover { color: #6366f1; border-bottom-color: #6366f1; }
+    .action-btn.chart:hover  { color: #2563eb; border-bottom-color: #2563eb; }
 
     /* ── Cards grid ── */
     .grid {
@@ -88,15 +115,10 @@
       font-weight: 700;
       font-size: 15px;
     }
-    .card-header.plano    { background: #0f4c81; }
-    .card-header.ftworth  { background: #7c3aed; }
+    .card-header.plano     { background: #0f4c81; }
+    .card-header.ftworth   { background: #7c3aed; }
     .card-header.arlington { background: #047857; }
-    .card-header .sub {
-      font-size: 11px;
-      font-weight: 500;
-      opacity: .8;
-      margin-top: 1px;
-    }
+    .card-header .sub { font-size: 11px; font-weight: 500; opacity: .8; margin-top: 1px; }
 
     /* ── Shift badge ── */
     .shift-badge {
@@ -163,24 +185,6 @@
       border-bottom: 1px solid #e5e7eb;
     }
 
-    /* ── Days Off button ── */
-    .days-btn {
-      flex-shrink: 0;
-      padding: 0 14px;
-      height: 38px;
-      border: none;
-      background: #0d9488;
-      color: #fff;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex; align-items: center; gap: 5px;
-      transition: background .2s;
-      white-space: nowrap;
-    }
-    .days-btn:hover { background: #0f766e; }
-
     /* ── Modal overlay ── */
     .modal-overlay {
       display: none;
@@ -202,6 +206,7 @@
       overflow-y: auto;
       padding-bottom: env(safe-area-inset-bottom, 16px);
     }
+    .modal-sheet.tall { max-height: 93vh; }
     .modal-handle {
       width: 36px; height: 4px;
       background: #d1d5db;
@@ -214,6 +219,10 @@
       justify-content: space-between;
       padding: 14px 18px 10px;
       border-bottom: 1px solid #f3f4f6;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 10;
     }
     .modal-title { font-size: 16px; font-weight: 700; color: #111827; }
     .modal-close {
@@ -224,7 +233,7 @@
     }
     .modal-close:hover { background: #e5e7eb; }
 
-    /* ── Person selector grid ── */
+    /* ── Person selector ── */
     .person-section { padding: 14px 18px 4px; }
     .person-section-label {
       font-size: 10px; font-weight: 700; text-transform: uppercase;
@@ -240,8 +249,9 @@
       color: #374151; cursor: pointer;
       transition: all .15s;
     }
-    .person-pill:hover { border-color: #0d9488; color: #0d9488; background: #f0fdfa; }
-    .person-pill.active { border-color: #0d9488; background: #0d9488; color: #fff; }
+    .person-pill:hover { border-color: #6b7280; }
+    .active-teal   { border-color: #0d9488 !important; background: #0d9488 !important; color: #fff !important; }
+    .active-indigo { border-color: #6366f1 !important; background: #6366f1 !important; color: #fff !important; }
 
     /* ── Results ── */
     .results-section { padding: 10px 18px 20px; }
@@ -255,43 +265,126 @@
       padding: 10px 12px;
       border-radius: 10px;
       margin-bottom: 6px;
-      background: #f0fdf4;
     }
+    .result-row.green  { background: #f0fdf4; }
+    .result-row.indigo { background: #eef2ff; }
     .result-icon { font-size: 18px; flex-shrink: 0; }
     .result-date-label { font-size: 14px; font-weight: 600; color: #111827; }
-    .result-day-label { font-size: 11px; color: #6b7280; margin-top: 1px; }
-    .results-empty {
-      text-align: center; padding: 28px 16px;
-      color: #9ca3af; font-size: 14px;
+    .result-day-label  { font-size: 11px; color: #6b7280; margin-top: 1px; }
+    .results-empty { text-align: center; padding: 28px 16px; color: #9ca3af; font-size: 14px; }
+    .no-selection  { text-align: center; padding: 28px 16px; color: #9ca3af; font-size: 14px; font-style: italic; }
+
+    /* ── Analytics controls ── */
+    .analytics-controls {
+      padding: 12px 18px 10px;
+      border-bottom: 1px solid #f3f4f6;
+      position: sticky;
+      top: 55px;
+      background: #fff;
+      z-index: 9;
     }
-    .no-selection {
-      text-align: center; padding: 28px 16px;
-      color: #9ca3af; font-size: 14px; font-style: italic;
+    .toggle-group {
+      display: flex;
+      background: #f3f4f6;
+      border-radius: 10px;
+      padding: 3px;
+      gap: 3px;
+      margin-bottom: 10px;
+    }
+    .toggle-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .toggle-btn.active {
+      background: #fff;
+      color: #1e3a8a;
+      box-shadow: 0 1px 3px rgba(0,0,0,.12);
+    }
+    .month-filters { display: flex; flex-wrap: wrap; gap: 6px; }
+    .month-chip {
+      padding: 4px 12px;
+      border: 1.5px solid #e5e7eb;
+      background: #f9fafb;
+      border-radius: 99px;
+      font-size: 12px; font-weight: 500;
+      color: #374151; cursor: pointer;
+      transition: all .15s;
+    }
+    .month-chip.active { border-color: #2563eb; background: #eff6ff; color: #1d4ed8; }
+
+    /* ── Analytics legend ── */
+    .analytics-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px 18px 6px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #374151; }
+    .legend-dot  { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+    /* ── Charts ── */
+    .charts-area { padding: 8px 14px 28px; }
+    .chart-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px 10px 6px;
+      margin-bottom: 12px;
+    }
+    .chart-heading {
+      font-size: 11px;
+      font-weight: 700;
+      color: #374151;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 4px;
     }
   </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>TSI Call Schedule</h1>
-  <p>Texas Stroke Institute — March 2026</p>
-</div>
-
-<div class="date-bar">
-  <button class="nav-btn" id="prevBtn" onclick="changeDate(-1)">‹</button>
-  <div class="date-info">
-    <div class="day-name" id="dayName"></div>
-    <div class="date-num" id="dateNum"></div>
-    <div class="month"   id="monthStr"></div>
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  STICKY TOP: header + date bar + action bar                           -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div class="sticky-top">
+  <div class="header">
+    <h1>TSI Call Schedule</h1>
+    <p id="headerSub">Texas Stroke Institute — 2026</p>
   </div>
-  <input type="date" class="date-picker" id="datePicker" min="2026-03-01" max="2026-03-31" onchange="onPickerChange(this.value)">
-  <button class="days-btn" onclick="openDaysOff()">📅 Days Off</button>
-  <button class="nav-btn" id="nextBtn" onclick="changeDate(1)">›</button>
+
+  <!-- Arrows now flank the date display directly -->
+  <div class="date-bar">
+    <button class="nav-btn" id="prevBtn" onclick="changeDate(-1)">‹</button>
+    <div class="date-info">
+      <div class="day-name" id="dayName"></div>
+      <div class="date-num" id="dateNum"></div>
+      <div class="month"   id="monthStr"></div>
+    </div>
+    <button class="nav-btn" id="nextBtn" onclick="changeDate(1)">›</button>
+    <input type="date" class="date-picker" id="datePicker" onchange="onPickerChange(this.value)">
+  </div>
+
+  <!-- Action buttons -->
+  <div class="action-bar">
+    <button class="action-btn teal"   onclick="openDaysOff()">📅 Days Off</button>
+    <button class="action-btn indigo" onclick="openCallDates()">🌙 Call Dates</button>
+    <button class="action-btn chart"  onclick="openAnalytics()">📊 Analytics</button>
+  </div>
 </div>
 
 <div class="grid" id="grid"></div>
 
-<!-- Days Off modal -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  DAYS OFF MODAL                                                        -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
 <div class="modal-overlay" id="daysModal" onclick="closeDaysOff(event)">
   <div class="modal-sheet" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
@@ -301,7 +394,7 @@
     </div>
     <div class="person-section">
       <div class="person-section-label">Select a person</div>
-      <div class="person-grid" id="personGrid"></div>
+      <div class="person-grid" id="daysPersonGrid"></div>
     </div>
     <div class="results-section" id="daysResults">
       <div class="no-selection">Tap a name above to see their free weekends</div>
@@ -309,114 +402,125 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  CALL DATES MODAL                                                      -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="callModal" onclick="closeCallDates(event)">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">🌙 Overnight Call Dates</span>
+      <button class="modal-close" onclick="closeCallDates()">✕</button>
+    </div>
+    <div class="person-section">
+      <div class="person-section-label">Select a person</div>
+      <div class="person-grid" id="callPersonGrid"></div>
+    </div>
+    <div class="results-section" id="callResults">
+      <div class="no-selection">Tap a name above to see their overnight call dates</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  ANALYTICS MODAL                                                       -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="analyticsModal" onclick="closeAnalytics(event)">
+  <div class="modal-sheet tall" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">📊 Work Distribution</span>
+      <button class="modal-close" onclick="closeAnalytics()">✕</button>
+    </div>
+    <div class="analytics-controls">
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="toggleAtt" onclick="setAnalyticsMode('attending')">Attendings</button>
+        <button class="toggle-btn"        id="toggleFel" onclick="setAnalyticsMode('fellow')">Fellows</button>
+      </div>
+      <div class="month-filters" id="monthFilters"></div>
+    </div>
+    <div class="analytics-legend" id="analyticsLegend"></div>
+    <div class="charts-area" id="chartsArea"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  SCHEDULE DATA                                                         -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
 <script>
-const SCHEDULE = {"Plano":{"2026-03-01":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-02":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-03":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-04":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-05":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-06":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-07":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":[]},"2026-03-08":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":[]},"2026-03-09":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-10":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-11":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-12":{"shift_type":"24h","on_call":["De la Garza","Roberts"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-13":{"shift_type":"24h","on_call":["Roberts","De la Garza"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-14":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-15":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-16":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-17":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-18":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-19":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-20":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-21":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-22":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-23":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-24":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-25":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-26":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-27":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-28":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-29":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-30":{"shift_type":"24h","on_call":["De la Garza","Beltagy"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-31":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]}},"FortWorth":{"2026-03-01":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-02":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-03":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-04":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-05":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-06":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-07":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-08":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-09":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-10":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen","Kim"]},"2026-03-11":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen","Kim"]},"2026-03-12":{"shift_type":"24h","on_call":["De la Garza","Roberts"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen","Kim"]},"2026-03-13":{"shift_type":"24h","on_call":["Roberts","De la Garza"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen","Kim"]},"2026-03-14":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-15":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-16":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-17":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-18":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-19":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-20":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-21":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Venizelos","hemorrhagic":"","ischemic":"","night":[]},"2026-03-22":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Venizelos","hemorrhagic":"","ischemic":"","night":[]},"2026-03-23":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-24":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-25":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-26":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-27":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-28":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-29":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-30":{"shift_type":"24h","on_call":["De la Garza","Beltagy"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-31":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]}},"Arlington":{"2026-03-01":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-02":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-03":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-04":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-05":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-06":{"shift_type":"oncall","on_call":["Beltagy","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-07":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-08":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-09":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-10":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-11":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-12":{"shift_type":"24h","on_call":["De la Garza","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-13":{"shift_type":"24h","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-14":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-15":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-16":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-17":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-18":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-19":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-20":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-21":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Venizelos","hemorrhagic":"","ischemic":"","night":[]},"2026-03-22":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Venizelos","hemorrhagic":"","ischemic":"","night":[]},"2026-03-23":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-24":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-25":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-26":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-27":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-28":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-29":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-30":{"shift_type":"24h","on_call":["De la Garza","Beltagy"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-31":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]}}};
+const SCHEDULE = {"Plano":{"2026-03-01":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-02":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-03":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-04":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-05":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-06":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-07":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":[]},"2026-03-08":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":[]},"2026-03-09":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-10":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-11":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-12":{"shift_type":"24h","on_call":["De la Garza","Roberts"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-13":{"shift_type":"24h","on_call":["Roberts","De la Garza"],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-03-14":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-15":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-16":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-17":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-18":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-19":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-20":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Venizelos","night":["Kim"]},"2026-03-21":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-22":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-23":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-24":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-25":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-26":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-27":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-03-28":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-29":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-30":{"shift_type":"24h","on_call":["De la Garza","Beltagy"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-03-31":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-04-01":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-04-02":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-04-03":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Kim"]},"2026-04-04":{"shift_type":"oncall","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-04-05":{"shift_type":"oncall","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-04-06":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-04-07":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-04-08":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-04-09":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-04-10":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Hansen","ischemic":"Kim","night":["Venkatraman"]},"2026-04-11":{"shift_type":"oncall","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-04-12":{"shift_type":"oncall","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-04-13":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-04-14":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-04-15":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-04-16":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-04-17":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Venkatraman","ischemic":"Bhuva","night":["Bhuva"]},"2026-04-18":{"shift_type":"oncall","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":[]},"2026-04-19":{"shift_type":"oncall","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":[]},"2026-04-20":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-04-21":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-04-22":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-04-23":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-04-24":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Kim","ischemic":"Hansen","night":["Hansen"]},"2026-04-25":{"shift_type":"oncall","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-04-26":{"shift_type":"oncall","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-04-27":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Bhuva","ischemic":"Venkatraman","night":["Kim"]},"2026-04-28":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Bhuva","ischemic":"Venkatraman","night":["Kim"]},"2026-04-29":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Bhuva","ischemic":"Venkatraman","night":["Kim"]},"2026-04-30":{"shift_type":"24h","on_call":[],"attending":"","hemorrhagic":"Bhuva","ischemic":"Venkatraman","night":["Kim"]}},"FortWorth":{"2026-03-01":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-02":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-03":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-04":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-05":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-06":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-07":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-08":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-09":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-10":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-11":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-12":{"shift_type":"24h","on_call":["De la Garza","Roberts"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-13":{"shift_type":"24h","on_call":["Roberts","De la Garza"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-14":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-15":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-16":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-17":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-18":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-19":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-20":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-21":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Venizelos","hemorrhagic":"","ischemic":"","night":[]},"2026-03-22":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Venizelos","hemorrhagic":"","ischemic":"","night":[]},"2026-03-23":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-24":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-25":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-26":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-27":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-28":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-29":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-30":{"shift_type":"24h","on_call":["De la Garza","Beltagy"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-31":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-01":{"shift_type":"24h","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-02":{"shift_type":"24h","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-03":{"shift_type":"24h","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-04-04":{"shift_type":"oncall","on_call":[],"attending":"NO COVERAGE","hemorrhagic":"","ischemic":"","night":[]},"2026-04-05":{"shift_type":"oncall","on_call":[],"attending":"NO COVERAGE","hemorrhagic":"","ischemic":"","night":[]},"2026-04-06":{"shift_type":"24h","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-04-07":{"shift_type":"24h","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-04-08":{"shift_type":"24h","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-04-09":{"shift_type":"24h","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-04-10":{"shift_type":"24h","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-04-11":{"shift_type":"oncall","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-04-12":{"shift_type":"oncall","on_call":[],"attending":"","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-04-13":{"shift_type":"24h","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-14":{"shift_type":"24h","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-15":{"shift_type":"24h","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-16":{"shift_type":"24h","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-17":{"shift_type":"24h","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-18":{"shift_type":"oncall","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-04-19":{"shift_type":"oncall","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-04-20":{"shift_type":"24h","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-04-21":{"shift_type":"24h","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-04-22":{"shift_type":"24h","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-04-23":{"shift_type":"24h","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-04-24":{"shift_type":"24h","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-04-25":{"shift_type":"oncall","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-04-26":{"shift_type":"oncall","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-04-27":{"shift_type":"24h","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Bhuva"]},"2026-04-28":{"shift_type":"24h","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Bhuva"]},"2026-04-29":{"shift_type":"24h","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Bhuva"]},"2026-04-30":{"shift_type":"24h","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":["Bhuva"]}},"Arlington":{"2026-03-01":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-02":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-03":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-04":{"shift_type":"24h","on_call":["Beltagy","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-05":{"shift_type":"24h","on_call":["Bauknight","Roberts"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-06":{"shift_type":"oncall","on_call":["Beltagy","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-07":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-08":{"shift_type":"oncall","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-03-09":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-10":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-11":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-12":{"shift_type":"24h","on_call":["De la Garza","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-13":{"shift_type":"24h","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-14":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-15":{"shift_type":"oncall","on_call":["Roberts","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-03-16":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-17":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-18":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-19":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-20":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Venizelos"]},"2026-03-21":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Venizelos","hemorrhagic":"","ischemic":"","night":[]},"2026-03-22":{"shift_type":"oncall","on_call":["Bauknight","De la Garza"],"attending":"Venizelos","hemorrhagic":"","ischemic":"","night":[]},"2026-03-23":{"shift_type":"24h","on_call":["Roberts","Beltagy"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-24":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-25":{"shift_type":"24h","on_call":["De la Garza","Bauknight"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-26":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-03-27":{"shift_type":"24h","on_call":["Beltagy","Roberts"],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-03-28":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-29":{"shift_type":"oncall","on_call":["Beltagy","Roberts"],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-03-30":{"shift_type":"24h","on_call":["De la Garza","Beltagy"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-03-31":{"shift_type":"24h","on_call":["Bauknight","De la Garza"],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-01":{"shift_type":"24h","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-02":{"shift_type":"24h","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-03":{"shift_type":"24h","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":[]},"2026-04-04":{"shift_type":"oncall","on_call":[],"attending":"NO COVERAGE","hemorrhagic":"","ischemic":"","night":[]},"2026-04-05":{"shift_type":"oncall","on_call":[],"attending":"NO COVERAGE","hemorrhagic":"","ischemic":"","night":[]},"2026-04-06":{"shift_type":"24h","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-04-07":{"shift_type":"24h","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-04-08":{"shift_type":"24h","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-04-09":{"shift_type":"24h","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-04-10":{"shift_type":"24h","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-04-11":{"shift_type":"oncall","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-04-12":{"shift_type":"oncall","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":[]},"2026-04-13":{"shift_type":"24h","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-14":{"shift_type":"24h","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-15":{"shift_type":"24h","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-16":{"shift_type":"24h","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Kim"]},"2026-04-17":{"shift_type":"24h","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Bhuva"]},"2026-04-18":{"shift_type":"oncall","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":[]},"2026-04-19":{"shift_type":"oncall","on_call":[],"attending":"Bhuva","hemorrhagic":"","ischemic":"","night":[]},"2026-04-20":{"shift_type":"24h","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-04-21":{"shift_type":"24h","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-04-22":{"shift_type":"24h","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-04-23":{"shift_type":"24h","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Venkatraman"]},"2026-04-24":{"shift_type":"24h","on_call":[],"attending":"Venkatraman","hemorrhagic":"","ischemic":"","night":["Hansen"]},"2026-04-25":{"shift_type":"oncall","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-04-26":{"shift_type":"oncall","on_call":[],"attending":"Hansen","hemorrhagic":"","ischemic":"","night":[]},"2026-04-27":{"shift_type":"24h","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Bhuva"]},"2026-04-28":{"shift_type":"24h","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Bhuva"]},"2026-04-29":{"shift_type":"24h","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Bhuva"]},"2026-04-30":{"shift_type":"24h","on_call":[],"attending":"Kim","hemorrhagic":"","ischemic":"","night":["Bhuva"]}}};
 
-const LOCATIONS = [
-  { key: 'Plano',     label: 'Medical City Plano',      cls: 'plano'     },
-  { key: 'FortWorth', label: 'Medical City Fort Worth', cls: 'ftworth'   },
-  { key: 'Arlington', label: 'Medical City Arlington',  cls: 'arlington' },
-];
-
-const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+// ── Constants ──────────────────────────────────────────────────────────────
+const DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const LOCATIONS = [
+  { key:'Plano',     label:'Medical City Plano',     cls:'plano'     },
+  { key:'FortWorth', label:'Medical City Fort Worth', cls:'ftworth'   },
+  { key:'Arlington', label:'Medical City Arlington',  cls:'arlington' },
+];
+const ATTENDINGS  = ['Bhuva','Hansen','Kim','Venizelos','Venkatraman'];
+const FELLOWS     = ['Bauknight','Beltagy','De la Garza','Roberts'];
+const ATT_COLORS  = ['#3b82f6','#f97316','#10b981','#8b5cf6','#ec4899'];
+const FEL_COLORS  = ['#0ea5e9','#f59e0b','#84cc16','#ef4444'];
 
-// All available dates sorted
 const ALL_DATES = Object.keys(SCHEDULE.Plano).sort();
+
+// ── Date navigation ────────────────────────────────────────────────────────
 let currentIdx = (() => {
-  const today = new Date();
-  const todayStr = today.toISOString().slice(0,10);
-  const i = ALL_DATES.indexOf(todayStr);
+  const today = new Date().toISOString().slice(0,10);
+  const i = ALL_DATES.indexOf(today);
   return i >= 0 ? i : 0;
 })();
 
 function dateKey(idx) { return ALL_DATES[idx]; }
 
 function shiftBadge(type) {
-  const map = {
-    'oncall': ['On-Call', 'badge-oncall'],
-    '24h':    ['24h (6A–6A)', 'badge-24h'],
-    'day':    ['Day Shift', 'badge-day'],
-    'night':  ['Night Shift', 'badge-night'],
-  };
+  const map = { oncall:['On-Call','badge-oncall'], '24h':['24h (6A–6A)','badge-24h'], day:['Day Shift','badge-day'], night:['Night Shift','badge-night'] };
   const [label, cls] = map[type] || ['—','badge-oncall'];
   return `<span class="shift-badge ${cls}">${label}</span>`;
 }
 
-function pill(name) {
-  return `<span class="pill">${name}</span>`;
-}
+function pill(name) { return `<span class="pill">${name}</span>`; }
 
 function renderCard(loc) {
   const key = dateKey(currentIdx);
   const d = SCHEDULE[loc.key][key] || {};
-
-  const oncall    = (d.on_call || []).map(pill).join('') || '<span class="empty">—</span>';
+  const oncall    = (d.on_call||[]).map(pill).join('') || '<span class="empty">—</span>';
   const att       = d.attending   || '';
   const hem       = d.hemorrhagic || '';
   const isc       = d.ischemic    || '';
   const nightArr  = Array.isArray(d.night) ? d.night : (d.night ? [d.night] : []);
   const hasNight  = nightArr.length > 0;
-  const nightHtml = hasNight ? nightArr.map(pill).join('') : '';
+  const nightHtml = nightArr.map(pill).join('');
 
-  // Build role rows
-  let rows = '';
+  let rows = `<div class="role-row"><div class="role-label">On-Call</div><div class="role-value">${oncall}</div></div>`;
 
-  // On-call always shown
-  rows += `<div class="role-row">
-    <div class="role-label">On-Call</div>
-    <div class="role-value">${oncall}</div>
-  </div>`;
-
-  // Plano: day shifts broken into Hemorrhagic / Ischemic / Night
   if (hem || isc) {
     rows += `<div class="section-divider">Day Shift — 7A to 6P</div>`;
-    if (hem) rows += `<div class="role-row">
-      <div class="role-label">Hemorrhagic</div>
-      <div class="role-value">${hem}</div>
-    </div>`;
-    if (isc) rows += `<div class="role-row">
-      <div class="role-label">Ischemic</div>
-      <div class="role-value">${isc}</div>
-    </div>`;
+    if (hem) rows += `<div class="role-row"><div class="role-label">Hemorrhagic</div><div class="role-value">${hem}</div></div>`;
+    if (isc) rows += `<div class="role-row"><div class="role-label">Ischemic</div><div class="role-value">${isc}</div></div>`;
     if (hasNight) {
       rows += `<div class="section-divider">Night Shift — 6P to 7A</div>`;
-      rows += `<div class="role-row">
-        <div class="role-label">Night Attending</div>
-        <div class="role-value">${nightHtml}</div>
-      </div>`;
+      rows += `<div class="role-row"><div class="role-label">Night Attending</div><div class="role-value">${nightHtml}</div></div>`;
     }
   } else {
-    // FortWorth / Arlington: attending = day, night = night
-    if (att) rows += `<div class="role-row">
-      <div class="role-label">${hasNight ? 'Day Attending' : 'Attending'}</div>
-      <div class="role-value">${att}</div>
-    </div>`;
+    if (att) rows += `<div class="role-row"><div class="role-label">${hasNight?'Day Attending':'Attending'}</div><div class="role-value">${att}</div></div>`;
     if (hasNight) {
       rows += `<div class="section-divider">Night Shift — 6P to 7A</div>`;
-      rows += `<div class="role-row">
-        <div class="role-label">Night Attending</div>
-        <div class="role-value">${nightHtml}</div>
-      </div>`;
+      rows += `<div class="role-row"><div class="role-label">Night Attending</div><div class="role-value">${nightHtml}</div></div>`;
     }
   }
 
-  return `
-  <div class="card">
-    <div class="card-header ${loc.cls}">
-      ${loc.label}
-      <div class="sub">${shiftBadge(d.shift_type || 'oncall')}</div>
-    </div>
-    <div class="roles">${rows}</div>
-  </div>`;
+  return `<div class="card"><div class="card-header ${loc.cls}">${loc.label}</div><div class="roles">${rows}</div></div>`;
 }
 
 function render() {
-  const key = dateKey(currentIdx);
-  const date = new Date(key + 'T00:00:00');
+  const key  = dateKey(currentIdx);
+  const date = new Date(key+'T00:00:00');
   document.getElementById('dayName').textContent  = DAYS[date.getDay()];
   document.getElementById('dateNum').textContent  = date.getDate();
   document.getElementById('monthStr').textContent = `${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
+  document.getElementById('headerSub').textContent = `Texas Stroke Institute — ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
   document.getElementById('datePicker').value     = key;
   document.getElementById('prevBtn').disabled     = currentIdx === 0;
   document.getElementById('nextBtn').disabled     = currentIdx === ALL_DATES.length - 1;
@@ -424,24 +528,21 @@ function render() {
 }
 
 function changeDate(delta) {
-  currentIdx = Math.max(0, Math.min(ALL_DATES.length - 1, currentIdx + delta));
+  currentIdx = Math.max(0, Math.min(ALL_DATES.length-1, currentIdx+delta));
   render();
 }
-
 function onPickerChange(val) {
   const i = ALL_DATES.indexOf(val);
   if (i >= 0) { currentIdx = i; render(); }
 }
 
-// ── Days Off feature ──────────────────────────────────────────────────────
-
-// Collect every unique name that appears in ANY role across the schedule
+// ── Shared helpers ─────────────────────────────────────────────────────────
 function getAllNames() {
   const names = new Set();
   for (const loc of Object.keys(SCHEDULE)) {
     for (const d of Object.values(SCHEDULE[loc])) {
-      (d.on_call  || []).forEach(n => { if (n) names.add(n); });
-      (d.night    || []).forEach(n => { if (n) names.add(n); });
+      (d.on_call||[]).forEach(n=>{ if(n) names.add(n); });
+      (d.night||[]).forEach(n=>{ if(n) names.add(n); });
       if (d.attending)   names.add(d.attending);
       if (d.hemorrhagic) names.add(d.hemorrhagic);
       if (d.ischemic)    names.add(d.ischemic);
@@ -450,82 +551,313 @@ function getAllNames() {
   return [...names].sort();
 }
 
-// Return true if a person appears in ANY role at ANY center on a given date
+// ── DAYS OFF ───────────────────────────────────────────────────────────────
+const WEEKEND_DATES = ALL_DATES.filter(d => { const day = new Date(d+'T00:00:00').getDay(); return day===0||day===6; });
+
 function isScheduled(name, dateStr) {
   for (const loc of Object.keys(SCHEDULE)) {
-    const d = SCHEDULE[loc][dateStr] || {};
-    if ((d.on_call  || []).includes(name)) return true;
-    if ((d.night    || []).includes(name)) return true;
-    if (d.attending   === name) return true;
-    if (d.hemorrhagic === name) return true;
-    if (d.ischemic    === name) return true;
+    const d = SCHEDULE[loc][dateStr]||{};
+    if ((d.on_call||[]).includes(name))  return true;
+    if ((d.night||[]).includes(name))    return true;
+    if (d.attending===name)   return true;
+    if (d.hemorrhagic===name) return true;
+    if (d.ischemic===name)    return true;
   }
   return false;
 }
 
-// Weekend dates (Sat=6, Sun=0) in the schedule
-const WEEKEND_DATES = ALL_DATES.filter(d => {
-  const day = new Date(d + 'T00:00:00').getDay();
-  return day === 0 || day === 6;
-});
-
-let selectedPerson = null;
+let selectedDaysPerson = null;
 
 function openDaysOff() {
-  // Build person pills
-  const grid = document.getElementById('personGrid');
-  grid.innerHTML = getAllNames().map(name =>
-    `<button class="person-pill${name === selectedPerson ? ' active' : ''}"
-       onclick="selectPerson('${name}')">${name}</button>`
+  document.getElementById('daysPersonGrid').innerHTML = getAllNames().map(name =>
+    `<button class="person-pill${name===selectedDaysPerson?' active-teal':''}" data-name="${name}" onclick="selectDaysPerson(this.dataset.name)">${name}</button>`
   ).join('');
   document.getElementById('daysModal').classList.add('open');
-  if (selectedPerson) renderDaysResults(selectedPerson);
+  if (selectedDaysPerson) renderDaysResults(selectedDaysPerson);
 }
-
 function closeDaysOff(e) {
-  if (!e || e.target === document.getElementById('daysModal')) {
+  if (!e || e.target===document.getElementById('daysModal'))
     document.getElementById('daysModal').classList.remove('open');
-  }
 }
-
-function selectPerson(name) {
-  selectedPerson = name;
-  // Update pill highlight
-  document.querySelectorAll('.person-pill').forEach(btn => {
-    btn.classList.toggle('active', btn.textContent === name);
-  });
+function selectDaysPerson(name) {
+  selectedDaysPerson = name;
+  document.querySelectorAll('#daysPersonGrid .person-pill').forEach(b => b.classList.toggle('active-teal', b.dataset.name===name));
   renderDaysResults(name);
 }
-
 function renderDaysResults(name) {
-  const freeDates = WEEKEND_DATES.filter(d => !isScheduled(name, d));
-  const container = document.getElementById('daysResults');
-
-  if (freeDates.length === 0) {
-    container.innerHTML = `<div class="results-empty">No free weekends found for <strong>${name}</strong> in March.</div>`;
-    return;
-  }
-
-  const rows = freeDates.map(d => {
-    const date   = new Date(d + 'T00:00:00');
-    const dayStr = DAYS[date.getDay()];
-    const dateNum = date.getDate();
-    const monthStr = MONTHS[date.getMonth()];
-    return `
-      <div class="result-row">
-        <div class="result-icon">🟢</div>
-        <div>
-          <div class="result-date-label">${dayStr}, ${monthStr} ${dateNum}</div>
-          <div class="result-day-label">Not scheduled at any center</div>
-        </div>
-      </div>`;
-  }).join('');
-
-  container.innerHTML = `
-    <div class="results-heading">${name} — ${freeDates.length} free weekend day${freeDates.length !== 1 ? 's' : ''}</div>
-    ${rows}`;
+  const free = WEEKEND_DATES.filter(d => !isScheduled(name,d));
+  const el = document.getElementById('daysResults');
+  if (!free.length) { el.innerHTML=`<div class="results-empty">No free weekends found for <strong>${name}</strong>.</div>`; return; }
+  el.innerHTML = `<div class="results-heading">${name} — ${free.length} free weekend day${free.length!==1?'s':''}</div>` +
+    free.map(d => {
+      const dt=new Date(d+'T00:00:00');
+      return `<div class="result-row green"><div class="result-icon">🟢</div><div><div class="result-date-label">${DAYS[dt.getDay()]}, ${MONTHS[dt.getMonth()]} ${dt.getDate()}</div><div class="result-day-label">Not scheduled at any center</div></div></div>`;
+    }).join('');
 }
 
+// ── CALL DATES ─────────────────────────────────────────────────────────────
+let selectedCallPerson = null;
+
+function getOvernightDates(name) {
+  const overnight = new Set();
+  for (const date of ALL_DATES) {
+    for (const loc of Object.keys(SCHEDULE)) {
+      const d = SCHEDULE[loc][date]||{};
+      // Night attending shift, weekend oncall attending, or fellow on-call duty
+      if (
+        (d.night||[]).includes(name) ||
+        (d.on_call||[]).includes(name) ||
+        (d.shift_type==='oncall' && d.attending===name)
+      ) {
+        overnight.add(date);
+        break; // date already counted, skip remaining centers
+      }
+    }
+  }
+  return [...overnight].sort();
+}
+
+function openCallDates() {
+  const makePills = arr => arr.map(name =>
+    `<button class="person-pill${name===selectedCallPerson?' active-indigo':''}" data-name="${name}" onclick="selectCallPerson(this.dataset.name)">${name}</button>`
+  ).join('');
+  document.getElementById('callPersonGrid').innerHTML = `
+    <div style="width:100%">
+      <div class="person-section-label" style="margin-bottom:6px">Attendings</div>
+      <div class="person-grid" style="margin-bottom:12px">${makePills(ATTENDINGS)}</div>
+      <div class="person-section-label" style="margin-bottom:6px">Fellows</div>
+      <div class="person-grid">${makePills(FELLOWS)}</div>
+    </div>`;
+  document.getElementById('callModal').classList.add('open');
+  if (selectedCallPerson) renderCallResults(selectedCallPerson);
+}
+function closeCallDates(e) {
+  if (!e || e.target===document.getElementById('callModal'))
+    document.getElementById('callModal').classList.remove('open');
+}
+function selectCallPerson(name) {
+  selectedCallPerson = name;
+  document.querySelectorAll('#callPersonGrid .person-pill').forEach(b => b.classList.toggle('active-indigo', b.dataset.name===name));
+  renderCallResults(name);
+}
+function renderCallResults(name) {
+  const dates = getOvernightDates(name);
+  const el = document.getElementById('callResults');
+  if (!dates.length) { el.innerHTML=`<div class="results-empty">No overnight call found for <strong>${name}</strong>.</div>`; return; }
+  const weeknight = dates.filter(d => ![0,5,6].includes(new Date(d+'T00:00:00').getDay()));
+  const weekend   = dates.filter(d =>  [0,5,6].includes(new Date(d+'T00:00:00').getDay()));
+  const makeRow = d => {
+    const dt = new Date(d+'T00:00:00');
+    const isWknd = [0,5,6].includes(dt.getDay());
+    return `<div class="result-row indigo"><div class="result-icon">🌙</div><div>
+      <div class="result-date-label">${DAYS[dt.getDay()]}, ${MONTHS[dt.getMonth()]} ${dt.getDate()}</div>
+      <div class="result-day-label">${isWknd ? 'Weekend on-call' : 'Weeknight call'}</div>
+    </div></div>`;
+  };
+  el.innerHTML =
+    `<div class="results-heading">${name} — ${dates.length} overnight call date${dates.length!==1?'s':''} &nbsp;·&nbsp; ${weeknight.length} weeknight · ${weekend.length} weekend</div>` +
+    dates.map(makeRow).join('');
+}
+
+// ── ANALYTICS ──────────────────────────────────────────────────────────────
+let analyticsMode = 'attending';
+
+const AVAILABLE_MONTHS = (() => {
+  const seen = new Map();
+  for (const d of ALL_DATES) {
+    const key = d.slice(0,7);
+    if (!seen.has(key)) {
+      const dt = new Date(d+'T00:00:00');
+      seen.set(key, `${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`);
+    }
+  }
+  return [...seen.entries()].map(([k,v]) => ({ key:k, label:v }));
+})();
+
+let selectedMonths = new Set(AVAILABLE_MONTHS.map(m => m.key));
+
+function getAnalyticsDates() {
+  return ALL_DATES.filter(d => selectedMonths.has(d.slice(0,7)));
+}
+
+function computeStats(dates) {
+  const zero = arr => Object.fromEntries(arr.map(a => [a, 0]));
+
+  // Total overnight for attendings: count unique dates where person has ANY overnight role
+  // (night[] at any center, OR attending on an oncall-shift day = weekend coverage)
+  const totalAttOvernight = zero(ATTENDINGS);
+  for (const date of dates) {
+    const seen = new Set();
+    for (const loc of Object.keys(SCHEDULE)) {
+      const d = SCHEDULE[loc][date] || {};
+      (d.night||[]).forEach(n => { if (n in totalAttOvernight) seen.add(n); });
+      if (d.shift_type==='oncall' && d.attending && d.attending in totalAttOvernight) seen.add(d.attending);
+    }
+    seen.forEach(n => totalAttOvernight[n]++);
+  }
+
+  // Total overnight for fellows: every date they appear in on_call[] (weekday 24h + weekend)
+  const totalFelOvernight = zero(FELLOWS);
+
+  const attStats = {
+    'Total Overnight Calls':      totalAttOvernight,
+    'Plano – Hemorrhagic':        zero(ATTENDINGS),
+    'Plano – Ischemic':           zero(ATTENDINGS),
+    'Plano – Night':              zero(ATTENDINGS),
+    'Plano – Weekend Attending':  zero(ATTENDINGS),
+    'Fort Worth – Day':           zero(ATTENDINGS),
+    'Fort Worth – Night':         zero(ATTENDINGS),
+    'Arlington – Day':            zero(ATTENDINGS),
+    'Arlington – Night':          zero(ATTENDINGS),
+  };
+  const felStats = {
+    'Total On-Call Days': totalFelOvernight,
+    'Weekday On-Call':    zero(FELLOWS),
+    'Weekend On-Call':    zero(FELLOWS),
+  };
+
+  const inc = (stat, key, n) => { if (n && n in stat[key]) stat[key][n]++; };
+
+  for (const date of dates) {
+    const p   = SCHEDULE.Plano[date]    || {};
+    const fw  = SCHEDULE.FortWorth[date]|| {};
+    const arl = SCHEDULE.Arlington[date]|| {};
+    const isFriSun = [0,5,6].includes(new Date(date+'T00:00:00').getDay());
+    const isSatSun = [0,6].includes(new Date(date+'T00:00:00').getDay());
+
+    inc(attStats, 'Plano – Hemorrhagic', p.hemorrhagic);
+    inc(attStats, 'Plano – Ischemic',    p.ischemic);
+    (p.night||[]).forEach(n   => inc(attStats, 'Plano – Night',   n));
+    (fw.night||[]).forEach(n  => inc(attStats, 'Fort Worth – Night',  n));
+    (arl.night||[]).forEach(n => inc(attStats, 'Arlington – Night',   n));
+
+    if (isSatSun) {
+      inc(attStats, 'Plano – Weekend Attending', p.attending);
+    }
+
+    inc(attStats, 'Fort Worth – Day', fw.attending);
+    inc(attStats, 'Arlington – Day',  arl.attending);
+
+    // Fellows — use Plano as representative (on_call is same across all centers)
+    (p.on_call||[]).forEach(f => {
+      if (f in totalFelOvernight) totalFelOvernight[f]++;
+      if (!isFriSun && f in felStats['Weekday On-Call']) felStats['Weekday On-Call'][f]++;
+      if ( isFriSun && f in felStats['Weekend On-Call']) felStats['Weekend On-Call'][f]++;
+    });
+  }
+  return { attStats, felStats };
+}
+
+function niceMax(v) {
+  if (v <= 4)  return 4;
+  if (v <= 8)  return 8;
+  if (v <= 12) return 12;
+  if (v <= 16) return 16;
+  if (v <= 20) return 20;
+  return Math.ceil(v/5)*5;
+}
+
+// Short display names for long labels
+function shortLabel(name) {
+  const m = { 'Venkatraman':'Venkat.', 'De la Garza':'De la G.', 'Bauknight':'Bauknight' };
+  return m[name] || name;
+}
+
+function svgBarChart(people, counts, colors) {
+  const W=290, H=148, ML=26, MR=6, MT=18, MB=42;
+  const CW = W-ML-MR, CH = H-MT-MB;
+  const maxVal = Math.max(...counts, 1);
+  const nM = niceMax(maxVal);
+  const n = people.length;
+  const gap = 10;
+  const barW = (CW - (n-1)*gap) / n;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;overflow:visible">`;
+
+  // Grid lines at 0, 25%, 50%, 75%, 100%
+  for (let i=0; i<=4; i++) {
+    const val = nM * i / 4;
+    const y = MT + CH - (val/nM)*CH;
+    svg += `<line x1="${ML}" y1="${y.toFixed(1)}" x2="${ML+CW}" y2="${y.toFixed(1)}" stroke="${i===0?'#d1d5db':'#f3f4f6'}" stroke-width="${i===0?1:0.5}"/>`;
+    svg += `<text x="${(ML-4).toFixed(1)}" y="${(y+3.5).toFixed(1)}" text-anchor="end" font-size="8" fill="#9ca3af">${Math.round(val)}</text>`;
+  }
+
+  // Bars + count labels + name labels
+  counts.forEach((val, i) => {
+    const x = ML + i*(barW+gap);
+    const bH = val > 0 ? (val/nM)*CH : 0;
+    const y = MT + CH - bH;
+    const cx = (x + barW/2).toFixed(1);
+
+    // Bar
+    svg += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(bH,0).toFixed(1)}" fill="${colors[i%colors.length]}" rx="3"/>`;
+
+    // Count above bar
+    if (val > 0) svg += `<text x="${cx}" y="${(y-3).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="#111827">${val}</text>`;
+
+    // Name below bar — rotated -40° so it fits without crowding
+    const ly = (MT + CH + 7).toFixed(1);
+    svg += `<text text-anchor="end" font-size="9" fill="#374151" transform="translate(${cx},${ly}) rotate(-40)">${shortLabel(people[i])}</text>`;
+  });
+
+  svg += `</svg>`;
+  return svg;
+}
+
+function openAnalytics() {
+  document.getElementById('monthFilters').innerHTML = AVAILABLE_MONTHS.map(m =>
+    `<button class="month-chip${selectedMonths.has(m.key)?' active':''}" data-key="${m.key}" onclick="toggleMonth(this.dataset.key)">${m.label}</button>`
+  ).join('');
+  document.getElementById('analyticsModal').classList.add('open');
+  renderAnalytics();
+}
+function closeAnalytics(e) {
+  if (!e || e.target===document.getElementById('analyticsModal'))
+    document.getElementById('analyticsModal').classList.remove('open');
+}
+function toggleMonth(key) {
+  if (selectedMonths.has(key)) {
+    if (selectedMonths.size > 1) selectedMonths.delete(key); // always keep at least one
+  } else {
+    selectedMonths.add(key);
+  }
+  document.querySelectorAll('.month-chip').forEach(b => b.classList.toggle('active', selectedMonths.has(b.dataset.key)));
+  renderAnalytics();
+}
+function setAnalyticsMode(mode) {
+  analyticsMode = mode;
+  document.getElementById('toggleAtt').classList.toggle('active', mode==='attending');
+  document.getElementById('toggleFel').classList.toggle('active', mode==='fellow');
+  renderAnalytics();
+}
+
+function renderAnalytics() {
+  const dates = getAnalyticsDates();
+  const { attStats, felStats } = computeStats(dates);
+
+  const people = analyticsMode==='attending' ? ATTENDINGS : FELLOWS;
+  const colors = analyticsMode==='attending' ? ATT_COLORS  : FEL_COLORS;
+  const stats  = analyticsMode==='attending' ? attStats    : felStats;
+
+  // Legend
+  document.getElementById('analyticsLegend').innerHTML = people.map((p,i) =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${colors[i]}"></div>${p}</div>`
+  ).join('');
+
+  // Charts — skip any category where everyone has 0
+  document.getElementById('chartsArea').innerHTML = Object.entries(stats).map(([title, data]) => {
+    const counts = people.map(p => data[p]||0);
+    if (counts.every(c => c===0)) return '';
+    return `<div class="chart-card">
+      <div class="chart-heading">${title}</div>
+      ${svgBarChart(people, counts, colors)}
+    </div>`;
+  }).join('');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+document.getElementById('datePicker').min = ALL_DATES[0];
+document.getElementById('datePicker').max = ALL_DATES[ALL_DATES.length-1];
 render();
 </script>
 </body>
