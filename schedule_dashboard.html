@@ -498,10 +498,6 @@ const SCHEDULE = {"Plano":{"2026-03-01":{"shift_type":"oncall","on_call":["Belta
 const SITE_URL = 'https://tiny-alpaca-8acfdd.netlify.app';
 function copyLink() {
   const url = SITE_URL;
-  // If running as home-screen app (standalone), open in Safari; also copy URL
-  if (window.navigator.standalone) {
-    window.open(url, '_blank');
-  }
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(url).then(() => showToast('🔗 Link copied!'));
   } else {
